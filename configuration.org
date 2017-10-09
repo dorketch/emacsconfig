@@ -1,0 +1,173 @@
+
+#+TITLE: Ma configuration pour Emacs
+#+AUTHOR: Martin Mailhot
+#+OPTIONS: num:nil
+
+* DEVELOPPEMENT
+** CEDT 
+
+ CEDET is a Collection of Emacs Development Environment Tools written
+ with the end goal of creating an advanced development environment in
+ Emacs.
+ Load CEDETSee cedet/common/cedet.info for configuration details
+ IMPORTANT: Tou must place this *before* any CEDET component
+ gets activated by another package (Gnus, auth-source, ...).
+
+#+BEGIN_SRC emacs-lisp
+
+(load-file "/Users/martinmailhot/.emacs.d/vendor/cedet/cedet-devel-load.el")
+
+#+END_SRC
+** EDE Project Management Features
+
+#+BEGIN_SRC emacs-lisp
+;; Enable EDE (Project Management) features
+(global-ede-mode 1)
+#+END_SRC
+
+** Semantic-mode 
+
+  [[https://www.gnu.org/software/emacs/manual/html_node/semantic/Semantic-mode.html][Semantic mode sur le Site de GNU.org]]
+
+  Semantic mode is a global minor mode for Semantic as a whole. When
+  enabled, each file you visit is automatically parsed, provided its
+  major mode is specified in the variable
+  semantic-new-buffer-setup-functions (the default value of this
+  variable sets up parsing for all the parsers included with Emacs, but
+  you may add to it if you install additional parsers).
+  Add further minor-modes to be enabled by semantic-mode.
+  See doc-string of `semantic-default-submodes' for other things
+  you can use here.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
+(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
+;; Enable Semantic
+(semantic-mode 1)
+#+END_SRC
+
+* BASIC EMACS
+** edit-server ?
+#+BEGIN_SRC emacs-lisp
+
+(add-to-list 'load-path "/Users/martinmailhot/.emacs.d/lisp/")
+(require 'edit-server)
+(edit-server-start)
+#+END_SRC
+
+** X config for emacs
+
+Je n'aime pas les scrollbar, toolbar et menu bar, on les set a -1 pour
+être certain qu'il n'y en a pas.
+
+#+BEGIN_SRC emacs-lisp
+
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+#+END_SRC
+
+** IDO mode
+#+BEGIN_SRC emacs-lisp
+(require 'ido)
+(ido-mode t)
+#+END_SRC
+
+
+** MELPA archive
+
+Le plus gros repo pour emacs
+
+#+BEGIN_SRC emacs-lisp
+
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize) ;; You might already have this line
+#+END_SRC
+
+
+** Highlight the current line
+
+   global-hl-line-mode softly highlights the background color of the
+   line containing point. It makes it a bit easier to find point, and
+   it’s useful when pairing or presenting code.
+
+#+BEGIN_SRC emacs-lisp
+
+(when window-system
+  (global-hl-line-mode))
+
+#+END_SRC
+
+* ace window
+Pour changer rapidement de fenetre quand plusieurs fenetre sont
+ouverte en même temps.
+
+#+BEGIN_SRC
+(global-set-key (kbd "C-x o") 'ace-window)
+#+END_SRC
+
+
+* Org-mode
+** Org agenda
+#+BEGIN_SRC emacs-lisp
+
+(require 'org)
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+#+END_SRC
+
+** Org agenda files
+#+BEGIN_SRC emacs-lisp
+
+;;(setq org-agenda-files (list "~/Dropbox/Space opéra/Space op.org" 
+;;                             "~/Dropbox/index.org"))
+
+;;(setq org-mobile-directory "~/Dropbox/MobileOrg")
+;;(setq org-directory "~/Dropbox/org")
+;;(setq org-agenda-files '("~/Dropbox/org/agenda.org"))
+;;(setq org-mobile-inbox-for-pull "~/Dropbox/org/from-phone.org")
+
+;;(setq auto-mode-alist (cons '(\"\\.sg$\" . songbook-mode) auto-mode-alist))
+;;(setq auto-mode-alist (cons '(\"\\.sbd$\" . songbook-mode) auto-mode-alist))
+;;(autoload 'songbook-mode \"songbook\" \"Major mode for Patacrep's songbooks\" t)
+#+END_SRC
+** Org-mode timestamp
+#+BEGIN_SRC emacs-lisp
+
+;; this is for timestamp in orgmode
+(setq org-log-done 'time)
+(define-key input-decode-map (kbd "s-/") (kbd "|"))
+(define-key input-decode-map (kbd "s-9") (kbd "["))
+(define-key input-decode-map (kbd "s-0") (kbd "]"))
+(define-key input-decode-map (kbd "s-7") (kbd "{"))
+(define-key input-decode-map (kbd "s-8") (kbd "}"))
+#+END_SRC
+** Org-mode bullet-mode
+
+#+BEGIN_SRC emacs-lisp
+
+(add-hook 'org-mode-hook
+          (lambda ()
+            (org-bullets-mode t)))
+(setq org-ellipsis "⤵")
+#+END_SRC
+
+* Theme
+
+Mettre le theme sur un theme custon par défault.
+#+BEGIN_SRC emacs-lisp
+
+(package-initialize)
+(setq custom-safe-themes t)
+(load-theme 'doom-one t)
+;;(load-theme 'wheatgrass t)
+
+#+END_SRC
+
